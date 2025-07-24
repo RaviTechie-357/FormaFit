@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # FormaFit - GYM Application
 
 A comprehensive web application that connects fitness trainers with clients, enabling booking, reviews, and goal tracking.
@@ -239,3 +240,7 @@ If you encounter any issues or have questions:
 ---
 
 **FormaFit** - Transform your fitness journey with professional guidance! 💪
+=======
+# FormaFit
+A full-stack gym application for trainers and clients built with Next.js, TypeScript, and Tailwind CSS
+>>>>>>> 89be157 (Initial commit)
