@@ -1,0 +1,35 @@
+// Prisma enums and types
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  TRAINER = 'TRAINER',
+  CLIENT = 'CLIENT'
+}
+
+export enum BookingStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  CANCELLED = 'CANCELLED',
+  COMPLETED = 'COMPLETED'
+}
+
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+  REFUNDED = 'REFUNDED'
+}
+
+export enum SubscriptionStatus {
+  ACTIVE = 'ACTIVE',
+  EXPIRED = 'EXPIRED',
+  CANCELLED = 'CANCELLED'
+}
+
+export enum NotificationType {
+  BOOKING_REQUEST = 'BOOKING_REQUEST',
+  BOOKING_CONFIRMED = 'BOOKING_CONFIRMED',
+  BOOKING_CANCELLED = 'BOOKING_CANCELLED',
+  PAYMENT_RECEIVED = 'PAYMENT_RECEIVED',
+  REVIEW_RECEIVED = 'REVIEW_RECEIVED',
+  SYSTEM_MESSAGE = 'SYSTEM_MESSAGE'
+} 
