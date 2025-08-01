@@ -7,7 +7,24 @@ import { useSelector, useDispatch } from 'react-redux'
 import { RootState, AppDispatch } from '../redux/store'
 import { logout } from '../redux/slices/authSlice'
 import { UserRole } from '../types/prisma'
+<<<<<<< HEAD
 import { Menu, X, User, Users, Settings, LogOut, Bell } from 'lucide-react'
+=======
+import {
+  Menu,
+  X,
+  User,
+  Users,
+  Settings,
+  LogOut,
+  Bell,
+  Dumbbell,
+  Calendar,
+  Target,
+  Star,
+  Award, // ✅ Added missing icons if used below
+} from 'lucide-react'
+>>>>>>> e583eef (Your commit message here)
 import Image from 'next/image'
 
 export default function Header() {
@@ -15,7 +32,11 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const pathname = usePathname()
   const dispatch = useDispatch<AppDispatch>()
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> e583eef (Your commit message here)
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth)
 
   // Handle scroll effect
@@ -64,9 +85,17 @@ export default function Header() {
     }
   }
 
+<<<<<<< HEAD
   const mainNavItems = [
     { name: 'Home', path: '/' },
     { name: 'Find Trainers', path: '/trainers' },
+=======
+  // ✅ Added "Features" link to the nav list
+  const mainNavItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Find Trainers', path: '/trainers' },
+    { name: 'Features', path: '/#features' }, // ✅ NEW
+>>>>>>> e583eef (Your commit message here)
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ]
@@ -86,6 +115,7 @@ export default function Header() {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
+<<<<<<< HEAD
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
             <div className="relative w-10 h-10">
@@ -101,6 +131,29 @@ export default function Header() {
               FormaFit
             </span>
           </Link>
+=======
+
+          {/* Logo */}
+           <Link href="/" className="flex items-center group">
+  {/* ✅ Responsive Logo Container */}
+  <div className="relative w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] md:w-[100px] md:h-[100px]">
+    <Image
+      src="/formafitperfect.png"
+      alt="FormaFit Logo"
+      fill // Fills the container
+      className="object-contain transition-transform duration-300 group-hover:scale-110"
+    />
+  </div>
+
+  {/* ✅ Responsive Brand Text - adjusted margin to tighten spacing */}
+  <span className="ml-2 sm:ml-3 md:ml-4 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+    FormaFit
+  </span>
+</Link>
+
+
+
+>>>>>>> e583eef (Your commit message here)
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
@@ -109,7 +162,11 @@ export default function Header() {
                 key={item.path}
                 href={item.path}
                 className={`text-sm font-medium transition-colors duration-200 ${
+<<<<<<< HEAD
                   isActivePath(item.path)
+=======
+                  isActivePath(item.path.replace('/#', '/'))
+>>>>>>> e583eef (Your commit message here)
                     ? 'text-blue-600'
                     : 'text-gray-700 hover:text-blue-600'
                 }`}
@@ -211,7 +268,11 @@ export default function Header() {
                   key={item.path}
                   href={item.path}
                   className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+<<<<<<< HEAD
                     isActivePath(item.path)
+=======
+                    isActivePath(item.path.replace('/#', '/'))
+>>>>>>> e583eef (Your commit message here)
                       ? 'text-blue-600 bg-blue-50'
                       : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                   }`}
@@ -219,7 +280,11 @@ export default function Header() {
                   {item.name}
                 </Link>
               ))}
+<<<<<<< HEAD
               
+=======
+
+>>>>>>> e583eef (Your commit message here)
               {isAuthenticated && (
                 <>
                   <hr className="my-2" />
@@ -252,4 +317,8 @@ export default function Header() {
       </div>
     </header>
   )
+<<<<<<< HEAD
 } 
+=======
+}
+>>>>>>> e583eef (Your commit message here)

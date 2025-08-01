@@ -8,6 +8,10 @@ import { login } from '../../../redux/slices/authSlice'
 import { Dumbbell, Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> e583eef (Your commit message here)
 export default function LoginPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
@@ -177,7 +181,21 @@ export default function LoginPage() {
               <Link href="/auth/register" className="font-medium text-blue-600 hover:text-blue-500">
                 Sign up here
               </Link>
+<<<<<<< HEAD
             </p>
+=======
+
+
+            </p>
+
+            <p className="text-sm text-gray-600">
+  Forgot your password?{' '}
+  <Link href="/auth/login/forgot" className="font-medium text-blue-600 hover:text-blue-500">
+    Reset it here
+  </Link>
+</p>
+
+>>>>>>> e583eef (Your commit message here)
           </div>
         </form>
       </div>

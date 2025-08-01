@@ -7,6 +7,11 @@ interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
+<<<<<<< HEAD
+=======
+  successMessage?: string | null
+  resetStep?: 'emailSent' | 'codeVerified' | null
+>>>>>>> e583eef (Your commit message here)
 }
 
 const initialState: AuthState = {
@@ -15,6 +20,11 @@ const initialState: AuthState = {
   isAuthenticated: false,
   isLoading: false,
   error: null,
+<<<<<<< HEAD
+=======
+  successMessage: null,
+  resetStep: null,
+>>>>>>> e583eef (Your commit message here)
 }
 
 // Async thunks
@@ -83,6 +93,60 @@ export const getCurrentUser = createAsyncThunk('auth/getCurrentUser', async () =
   return data
 })
 
+<<<<<<< HEAD
+=======
+// Forgot Password
+export const forgotPassword = createAsyncThunk(
+  'auth/forgotPassword',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const response = await fetch('/api/auth/forgot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        return rejectWithValue(error.message || 'Email not found')
+      }
+
+      const data = await response.json()
+      return data.message
+    } catch (error: any) {
+      return rejectWithValue(error.message)
+    }
+  }
+)
+
+// Verify Code
+export const verifyResetCode = createAsyncThunk(
+  'auth/verifyResetCode',
+  async (
+    { email, code }: { email: string; code: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await fetch('/api/auth/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        return rejectWithValue(error.message || 'Invalid code')
+      }
+
+      const data = await response.json()
+      return data.message
+    } catch (error: any) {
+      return rejectWithValue(error.message)
+    }
+  }
+)
+
+>>>>>>> e583eef (Your commit message here)
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -114,6 +178,10 @@ const authSlice = createSlice({
         state.isLoading = false
         state.error = action.error.message || 'Login failed'
       })
+<<<<<<< HEAD
+=======
+
+>>>>>>> e583eef (Your commit message here)
       // Register
       .addCase(register.pending, (state) => {
         state.isLoading = true
@@ -130,6 +198,10 @@ const authSlice = createSlice({
         state.isLoading = false
         state.error = action.error.message || 'Registration failed'
       })
+<<<<<<< HEAD
+=======
+
+>>>>>>> e583eef (Your commit message here)
       // Logout
       .addCase(logout.fulfilled, (state) => {
         state.user = null
@@ -137,7 +209,12 @@ const authSlice = createSlice({
         state.isAuthenticated = false
         localStorage.removeItem('token')
       })
+<<<<<<< HEAD
       // Get current user
+=======
+
+      // Get Current User
+>>>>>>> e583eef (Your commit message here)
       .addCase(getCurrentUser.pending, (state) => {
         state.isLoading = true
       })
@@ -153,8 +230,45 @@ const authSlice = createSlice({
         state.isAuthenticated = false
         localStorage.removeItem('token')
       })
+<<<<<<< HEAD
+=======
+
+      // Forgot Password
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.successMessage = action.payload
+        state.resetStep = 'emailSent'
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload as string
+      })
+
+      // Verify Reset Code
+      .addCase(verifyResetCode.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(verifyResetCode.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.successMessage = action.payload
+        state.resetStep = 'codeVerified'
+      })
+      .addCase(verifyResetCode.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload as string
+      })
+>>>>>>> e583eef (Your commit message here)
   },
 })
 
 export const { clearError, setToken } = authSlice.actions
+<<<<<<< HEAD
 export default authSlice.reducer 
+=======
+export default authSlice.reducer
+>>>>>>> e583eef (Your commit message here)

@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
+<<<<<<< HEAD
 import { 
   Dumbbell, 
   Users, 
@@ -13,12 +14,19 @@ import {
   Award,
   ArrowRight
 } from 'lucide-react'
+=======
+import { Dumbbell, ArrowRight } from 'lucide-react'
+import { CountUp }  from "./dashboard/Count"
+>>>>>>> e583eef (Your commit message here)
 
 export default function HomePage() {
   const router = useRouter()
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e583eef (Your commit message here)
   useEffect(() => {
     // Auto-redirect authenticated users to their dashboard
     if (isAuthenticated && user) {
@@ -32,6 +40,7 @@ export default function HomePage() {
     }
   }, [isAuthenticated, user, router])
 
+<<<<<<< HEAD
   const features = [
     {
       icon: <Dumbbell className="w-8 h-8" />,
@@ -70,10 +79,37 @@ export default function HomePage() {
     { number: '10K+', label: 'Happy Clients' },
     { number: '50K+', label: 'Sessions Completed' },
     { number: '4.8', label: 'Average Rating' }
+=======
+ const stats = [
+  { number: 500, label: 'Certified Trainers', suffix: '+' },
+  { number: 10000, label: 'Happy Clients', suffix: '+' },
+  { number: 50000, label: 'Sessions Completed', suffix: '+' },
+  { number: 4.8, label: 'Average Rating', suffix: '' }
+]
+
+
+  const features = [
+    {
+      title: 'Expert Trainers',
+      description: 'Work with certified professionals who guide you through every step.',
+      icon: <Dumbbell className="w-8 h-8" />
+    },
+    {
+      title: 'Custom Plans',
+      description: 'Get fitness plans tailored to your personal goals and needs.',
+      icon: <Dumbbell className="w-8 h-8" />
+    },
+    {
+      title: 'Flexible Scheduling',
+      description: 'Book sessions based on your availability and lifestyle.',
+      icon: <Dumbbell className="w-8 h-8" />
+    },
+>>>>>>> e583eef (Your commit message here)
   ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+<<<<<<< HEAD
       {/* Navigation */}
       <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -113,6 +149,8 @@ export default function HomePage() {
         </div>
         </nav>
 
+=======
+>>>>>>> e583eef (Your commit message here)
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -176,7 +214,13 @@ export default function HomePage() {
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">
+<<<<<<< HEAD
                   {stat.number}
+=======
+                    <CountUp end={stat.number} suffix={stat.suffix} />
+
+
+>>>>>>> e583eef (Your commit message here)
                 </div>
                 <div className="text-gray-600">{stat.label}</div>
               </div>
