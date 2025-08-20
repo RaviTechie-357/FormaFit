@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../redux/store";
@@ -19,6 +19,23 @@ export default function LoginPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [isClient, setIsClient] = useState(false);
+
+  // Prevent hydration errors from browser extensions
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="animate-pulse">
+          <div className="w-64 h-8 bg-gray-200 rounded mb-4"></div>
+          <div className="w-48 h-8 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
@@ -192,8 +209,7 @@ export default function LoginPage() {
                 Sign up here
               </Link>
             </p>
-
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 mt-2">
               Forgot your password?{" "}
               <Link
                 href="/auth/login/forgot"

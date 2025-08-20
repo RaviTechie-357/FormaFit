@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import Link from "next/link";
 import {
   Dumbbell,
   Users,
@@ -13,8 +14,8 @@ import {
   Award,
   ArrowRight,
 } from "lucide-react";
-// import { Dumbbell, ArrowRight } from 'lucide-react'
 import { CountUp } from "./dashboard/Count";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   const router = useRouter();
@@ -35,6 +36,45 @@ export default function HomePage() {
     }
   }, [isAuthenticated, user, router]);
 
+  const features = [
+    {
+      icon: <Dumbbell className="w-8 h-8" />,
+      title: "Expert Trainers",
+      description:
+        "Connect with certified fitness professionals who specialize in your goals.",
+    },
+    {
+      icon: <Calendar className="w-8 h-8" />,
+      title: "Flexible Scheduling",
+      description:
+        "Book sessions that fit your schedule with real-time availability.",
+    },
+    {
+      icon: <Target className="w-8 h-8" />,
+      title: "Goal Tracking",
+      description:
+        "Set and track your fitness goals with personalized progress monitoring.",
+    },
+    {
+      icon: <Star className="w-8 h-8" />,
+      title: "Verified Reviews",
+      description:
+        "Read authentic reviews from real clients to choose the best trainer.",
+    },
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: "Community Support",
+      description:
+        "Join a community of fitness enthusiasts and stay motivated.",
+    },
+    {
+      icon: <Award className="w-8 h-8" />,
+      title: "Certified Professionals",
+      description:
+        "All trainers are verified and certified in their specialties.",
+    },
+  ];
+
   const stats = [
     { number: 500, label: "Certified Trainers", suffix: "+" },
     { number: 10000, label: "Happy Clients", suffix: "+" },
@@ -42,28 +82,58 @@ export default function HomePage() {
     { number: 4.8, label: "Average Rating", suffix: "" },
   ];
 
-  const features = [
-    {
-      title: "Expert Trainers",
-      description:
-        "Work with certified professionals who guide you through every step.",
-      icon: <Dumbbell className="w-8 h-8" />,
-    },
-    {
-      title: "Custom Plans",
-      description:
-        "Get fitness plans tailored to your personal goals and needs.",
-      icon: <Dumbbell className="w-8 h-8" />,
-    },
-    {
-      title: "Flexible Scheduling",
-      description: "Book sessions based on your availability and lifestyle.",
-      icon: <Dumbbell className="w-8 h-8" />,
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* Navigation */}
+      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Dumbbell className="w-8 h-8 text-blue-600" />
+              <span className="ml-2 text-xl font-bold text-gray-900">
+                FormaFit
+              </span>
+            </div>
+            <div className="hidden md:flex items-center space-x-8">
+              <Link
+                href="/features"
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+              >
+                Features
+              </Link>
+              <Link
+                href="/about"
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="text-gray-600 hover:text-blue-600 transition-colors"
+              >
+                Contact
+              </Link>
+              {!isAuthenticated && (
+                <>
+                  <button
+                    onClick={() => router.push("/auth/login")}
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => router.push("/auth/register")}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Get Started
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -89,7 +159,7 @@ export default function HomePage() {
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </button>
                     <button
-                      onClick={() => router.push("/find-trainer")}
+                      onClick={() => router.push("/trainers")}
                       className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-50 transition-colors"
                     >
                       Browse Trainers
@@ -97,7 +167,7 @@ export default function HomePage() {
                   </>
                 ) : (
                   <button
-                    onClick={() => router.push("/find-trainer")}
+                    onClick={() => router.push("/trainers")}
                     className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center"
                   >
                     Find Trainers
@@ -188,7 +258,7 @@ export default function HomePage() {
             </button>
           ) : (
             <button
-              onClick={() => router.push("/find-trainer")}
+              onClick={() => router.push("/trainers")}
               className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors"
             >
               Find Your Trainer
@@ -197,95 +267,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center mb-4">
-                <Dumbbell className="w-8 h-8 text-blue-400" />
-                <span className="ml-2 text-xl font-bold">FormaFit</span>
-              </div>
-              <p className="text-gray-400">
-                Connecting fitness enthusiasts with certified professionals for
-                a healthier world.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a
-                    href="#features"
-                    className="hover:text-white transition-colors"
-                  >
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#about"
-                    className="hover:text-white transition-colors"
-                  >
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#contact"
-                    className="hover:text-white transition-colors"
-                  >
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">For Trainers</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Become a Trainer
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Trainer Resources
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Success Stories
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Terms of Service
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 FormaFit. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

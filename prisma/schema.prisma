@@ -98,8 +98,13 @@ model TrainerProfile {
   updatedAt       DateTime @updatedAt
 
   // Relations
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Subscription Subscription[]
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings      Booking[]
+  reviews       Review[]
+  subscriptions Subscription[]
+  availability  Availability[]
+  media         Media[]
+  trainerTags   TrainerTag[]
 
   @@map("trainer_profiles")
 }
@@ -109,7 +114,7 @@ model ClientProfile {
   id             String   @id @default(cuid())
   userId         String   @unique
   fitnessGoals   String[]
-  preferences    Json?
+  preferences    Json? // JSON object for preferences
   height         Float?
   weight         Float?
   age            Int?
@@ -118,7 +123,12 @@ model ClientProfile {
   updatedAt      DateTime @updatedAt
 
   // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings      Booking[]
+  reviews       Review[]
+  subscriptions Subscription[]
+  payments      Payment[]
+  goals         Goal[]
 
   @@map("client_profiles")
 }
@@ -138,10 +148,14 @@ model Booking {
   updatedAt DateTime      @updatedAt
 
   // Relations
-  trainer  User      @relation("TrainerBookings", fields: [trainerId], references: [id])
-  client   User      @relation("ClientBookings", fields: [clientId], references: [id])
-  payments Payment[]
-  reviews  Review[]
+  trainer          User            @relation("TrainerBookings", fields: [trainerId], references: [id])
+  client           User            @relation("ClientBookings", fields: [clientId], references: [id])
+  payments         Payment[]
+  reviews          Review[]
+  TrainerProfile   TrainerProfile? @relation(fields: [trainerProfileId], references: [id])
+  trainerProfileId String?
+  ClientProfile    ClientProfile?  @relation(fields: [clientProfileId], references: [id])
+  clientProfileId  String?
 
   @@map("bookings")
 }
@@ -152,14 +166,18 @@ model Review {
   trainerId String
   clientId  String
   bookingId String?
-  rating    Int
+  rating    Int // 1-5 stars
   comment   String?
   createdAt DateTime @default(now())
 
   // Relations
-  trainer User     @relation("TrainerReviews", fields: [trainerId], references: [id])
-  client  User     @relation("ClientReviews", fields: [clientId], references: [id])
-  booking Booking? @relation(fields: [bookingId], references: [id])
+  trainer          User            @relation("TrainerReviews", fields: [trainerId], references: [id])
+  client           User            @relation("ClientReviews", fields: [clientId], references: [id])
+  booking          Booking?        @relation(fields: [bookingId], references: [id])
+  TrainerProfile   TrainerProfile? @relation(fields: [trainerProfileId], references: [id])
+  trainerProfileId String?
+  ClientProfile    ClientProfile?  @relation(fields: [clientProfileId], references: [id])
+  clientProfileId  String?
 
   @@map("reviews")
 }
@@ -209,8 +227,10 @@ model Subscription {
   updatedAt    DateTime           @updatedAt
 
   // Relations
-  user    User           @relation(fields: [userId], references: [id])
-  trainer TrainerProfile @relation(fields: [trainerId], references: [id])
+  user            User           @relation(fields: [userId], references: [id])
+  trainer         TrainerProfile @relation(fields: [trainerId], references: [id])
+  ClientProfile   ClientProfile? @relation(fields: [clientProfileId], references: [id])
+  clientProfileId String?
 
   @@map("subscriptions")
 }
@@ -225,7 +245,9 @@ model Availability {
   isActive  Boolean @default(true)
 
   // Relations
-  trainer User @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  trainer          User            @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  TrainerProfile   TrainerProfile? @relation(fields: [trainerProfileId], references: [id])
+  trainerProfileId String?
 
   @@map("availability")
 }
@@ -266,8 +288,10 @@ model TrainerTag {
   tagId     String
 
   // Relations
-  trainer User @relation(fields: [trainerId], references: [id], onDelete: Cascade)
-  tag     Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  trainer          User            @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  tag              Tag             @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  TrainerProfile   TrainerProfile? @relation(fields: [trainerProfileId], references: [id])
+  trainerProfileId String?
 
   @@unique([trainerId, tagId])
   @@map("trainer_tags")
@@ -284,7 +308,9 @@ model Media {
   uploadedAt  DateTime @default(now())
 
   // Relations
-  trainer User @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  trainer          User            @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  TrainerProfile   TrainerProfile? @relation(fields: [trainerProfileId], references: [id])
+  trainerProfileId String?
 
   @@map("media")
 }
@@ -297,12 +323,14 @@ model Goal {
   description String?
   targetDate  DateTime?
   isCompleted Boolean   @default(false)
-  progress    Int       @default(0)
+  progress    Int       @default(0) // percentage
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   // Relations
-  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client          User           @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  ClientProfile   ClientProfile? @relation(fields: [clientProfileId], references: [id])
+  clientProfileId String?
 
   @@map("goals")
 }
@@ -315,13 +343,15 @@ model Payment {
   amount        Float
   currency      String        @default("USD")
   status        PaymentStatus @default(PENDING)
-  method        String?
+  method        String? // stripe, paypal, etc.
   transactionId String?
   createdAt     DateTime      @default(now())
 
   // Relations
-  booking Booking? @relation(fields: [bookingId], references: [id])
-  user    User     @relation(fields: [userId], references: [id])
+  booking         Booking?       @relation(fields: [bookingId], references: [id])
+  user            User           @relation(fields: [userId], references: [id])
+  ClientProfile   ClientProfile? @relation(fields: [clientProfileId], references: [id])
+  clientProfileId String?
 
   @@map("payments")
 }
