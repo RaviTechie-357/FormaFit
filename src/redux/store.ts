@@ -1,15 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit'
-import authReducer from './slices/authSlice'
-import trainerReducer from './slices/trainerSlice'
-import bookingReducer from './slices/bookingSlice'
-import reviewReducer from './slices/reviewSlice'
-import notificationReducer from './slices/notificationSlice'
-import uiReducer from './slices/uiSlice'
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./slices/authSlice";
+import trainerReducer from "./slices/trainerSlice";
+import bookingReducer from "./slices/bookingSlice";
+import reviewReducer from "./slices/reviewSlice";
+import notificationReducer from "./slices/notificationSlice";
+import uiReducer from "./slices/uiSlice";
 
-<<<<<<< HEAD
-=======
-
->>>>>>> e583eef (Your commit message here)
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -22,10 +18,10 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['persist/PERSIST'],
+        ignoredActions: ["persist/PERSIST"],
       },
     }),
-})
+});
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch 
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

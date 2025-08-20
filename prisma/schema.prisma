@@ -3,7 +3,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../formafit/generated/prisma"
 }
 
 datasource db {
@@ -60,18 +59,18 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  trainerProfile TrainerProfile?
-  clientProfile  ClientProfile?
-  bookingsAsTrainer Booking[] @relation("TrainerBookings")
-  bookingsAsClient  Booking[] @relation("ClientBookings")
-  reviewsAsTrainer  Review[] @relation("TrainerReviews")
-  reviewsAsClient   Review[] @relation("ClientReviews")
+  trainerProfile    TrainerProfile?
+  clientProfile     ClientProfile?
+  bookingsAsTrainer Booking[]       @relation("TrainerBookings")
+  bookingsAsClient  Booking[]       @relation("ClientBookings")
+  reviewsAsTrainer  Review[]        @relation("TrainerReviews")
+  reviewsAsClient   Review[]        @relation("ClientReviews")
   notifications     Notification[]
   adminLogs         AdminLog[]
   subscriptions     Subscription[]
   availability      Availability[]
-  sentMessages      Message[] @relation("SentMessages")
-  receivedMessages  Message[] @relation("ReceivedMessages")
+  sentMessages      Message[]       @relation("SentMessages")
+  receivedMessages  Message[]       @relation("ReceivedMessages")
   payments          Payment[]
   goals             Goal[]
   media             Media[]
@@ -80,77 +79,69 @@ model User {
   @@map("users")
 }
 
+
 // Trainer profiles
 model TrainerProfile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  bio         String?
-  experience  Int      @default(0) // years of experience
-  skills      String[] // array of skills
-  rating      Float    @default(0)
-  totalReviews Int     @default(0)
-  hourlyRate  Float    @default(0)
-  location    String?
-  certifications String[]
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  bio             String?
+  experience     String?     
+  skills          String[]
+  rating          Float    @default(0)
+  totalReviews    Int      @default(0)
+  hourlyRate      Float    @default(0)
+  location        String?
+  certifications  String[]
   specializations String[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+   documentation   String[] 
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   // Relations
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bookings    Booking[]
-  reviews     Review[]
-  subscriptions Subscription[]
-  availability Availability[]
-  media       Media[]
-  trainerTags TrainerTag[]
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Subscription Subscription[]
 
   @@map("trainer_profiles")
 }
 
 // Client profiles
 model ClientProfile {
-  id           String   @id @default(cuid())
-  userId       String   @unique
-  fitnessGoals String[]
-  preferences  Json?    // JSON object for preferences
-  height       Float?
-  weight       Float?
-  age          Int?
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  fitnessGoals   String[]
+  preferences    Json?
+  height         Float?
+  weight         Float?
+  age            Int?
   medicalHistory String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Relations
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bookings     Booking[]
-  reviews      Review[]
-  subscriptions Subscription[]
-  payments     Payment[]
-  goals        Goal[]
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("client_profiles")
 }
 
 // Bookings
 model Booking {
-  id         String        @id @default(cuid())
-  trainerId  String
-  clientId   String
-  date       DateTime
-  startTime  String
-  endTime    String
-  status     BookingStatus @default(PENDING)
-  notes      String?
-  location   String?
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  id        String        @id @default(cuid())
+  trainerId String
+  clientId  String
+  date      DateTime
+  startTime String
+  endTime   String
+  status    BookingStatus @default(PENDING)
+  notes     String?
+  location  String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
   // Relations
-  trainer    User          @relation("TrainerBookings", fields: [trainerId], references: [id])
-  client     User          @relation("ClientBookings", fields: [clientId], references: [id])
-  payments   Payment[]
-  reviews    Review[]
+  trainer  User      @relation("TrainerBookings", fields: [trainerId], references: [id])
+  client   User      @relation("ClientBookings", fields: [clientId], references: [id])
+  payments Payment[]
+  reviews  Review[]
 
   @@map("bookings")
 }
@@ -161,14 +152,14 @@ model Review {
   trainerId String
   clientId  String
   bookingId String?
-  rating    Int      // 1-5 stars
+  rating    Int
   comment   String?
   createdAt DateTime @default(now())
 
   // Relations
-  trainer   User     @relation("TrainerReviews", fields: [trainerId], references: [id])
-  client    User     @relation("ClientReviews", fields: [clientId], references: [id])
-  booking   Booking? @relation(fields: [bookingId], references: [id])
+  trainer User     @relation("TrainerReviews", fields: [trainerId], references: [id])
+  client  User     @relation("ClientReviews", fields: [clientId], references: [id])
+  booking Booking? @relation(fields: [bookingId], references: [id])
 
   @@map("reviews")
 }
@@ -184,7 +175,7 @@ model Notification {
   createdAt DateTime         @default(now())
 
   // Relations
-  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
 }
@@ -198,67 +189,67 @@ model AdminLog {
   timestamp DateTime @default(now())
 
   // Relations
-  admin     User     @relation(fields: [adminId], references: [id])
+  admin User @relation(fields: [adminId], references: [id])
 
   @@map("admin_logs")
 }
 
 // Subscriptions
 model Subscription {
-  id          String             @id @default(cuid())
-  userId      String
-  trainerId   String
-  packageName String
-  sessions    Int
-  usedSessions Int               @default(0)
-  price       Float
-  expiresAt   DateTime
-  status      SubscriptionStatus @default(ACTIVE)
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  id           String             @id @default(cuid())
+  userId       String
+  trainerId    String
+  packageName  String
+  sessions     Int
+  usedSessions Int                @default(0)
+  price        Float
+  expiresAt    DateTime
+  status       SubscriptionStatus @default(ACTIVE)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
 
   // Relations
-  user        User               @relation(fields: [userId], references: [id])
-  trainer     TrainerProfile     @relation(fields: [trainerId], references: [id])
+  user    User           @relation(fields: [userId], references: [id])
+  trainer TrainerProfile @relation(fields: [trainerId], references: [id])
 
   @@map("subscriptions")
 }
 
 // Availability
 model Availability {
-  id         String @id @default(cuid())
-  trainerId  String
-  dayOfWeek  Int    // 0-6 (Sunday-Saturday)
-  startTime  String
-  endTime    String
-  isActive   Boolean @default(true)
+  id        String  @id @default(cuid())
+  trainerId String
+  dayOfWeek Int // 0-6 (Sunday-Saturday)
+  startTime String
+  endTime   String
+  isActive  Boolean @default(true)
 
   // Relations
-  trainer    User   @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  trainer User @relation(fields: [trainerId], references: [id], onDelete: Cascade)
 
   @@map("availability")
 }
 
 // Messages
 model Message {
-  id          String   @id @default(cuid())
-  senderId    String
-  receiverId  String
-  content     String
-  isRead      Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  content    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
 
   // Relations
-  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
-  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  sender   User @relation("SentMessages", fields: [senderId], references: [id])
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id])
 
   @@map("messages")
 }
 
 // Tags
 model Tag {
-  id          String @id @default(cuid())
-  name        String @unique
+  id          String   @id @default(cuid())
+  name        String   @unique
   description String?
   createdAt   DateTime @default(now())
 
@@ -270,13 +261,13 @@ model Tag {
 
 // Trainer tags (many-to-many)
 model TrainerTag {
-  id         String @id @default(cuid())
-  trainerId  String
-  tagId      String
+  id        String @id @default(cuid())
+  trainerId String
+  tagId     String
 
   // Relations
-  trainer    User   @relation(fields: [trainerId], references: [id], onDelete: Cascade)
-  tag        Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  trainer User @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  tag     Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@unique([trainerId, tagId])
   @@map("trainer_tags")
@@ -286,51 +277,51 @@ model TrainerTag {
 model Media {
   id          String   @id @default(cuid())
   trainerId   String
-  type        String   // image, video, pdf
+  type        String // image, video, pdf
   url         String
   title       String?
   description String?
   uploadedAt  DateTime @default(now())
 
   // Relations
-  trainer     User     @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  trainer User @relation(fields: [trainerId], references: [id], onDelete: Cascade)
 
   @@map("media")
 }
 
 // Goals
 model Goal {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   clientId    String
   title       String
   description String?
   targetDate  DateTime?
-  isCompleted Boolean  @default(false)
-  progress    Int      @default(0) // percentage
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isCompleted Boolean   @default(false)
+  progress    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   // Relations
-  client      User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   @@map("goals")
 }
 
 // Payments
 model Payment {
-  id        String        @id @default(cuid())
-  bookingId String?
-  userId    String
-  amount    Float
-  currency  String        @default("USD")
-  status    PaymentStatus @default(PENDING)
-  method    String?       // stripe, paypal, etc.
+  id            String        @id @default(cuid())
+  bookingId     String?
+  userId        String
+  amount        Float
+  currency      String        @default("USD")
+  status        PaymentStatus @default(PENDING)
+  method        String?
   transactionId String?
-  createdAt DateTime      @default(now())
+  createdAt     DateTime      @default(now())
 
   // Relations
-  booking   Booking?      @relation(fields: [bookingId], references: [id])
-  user      User          @relation(fields: [userId], references: [id])
+  booking Booking? @relation(fields: [bookingId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
 
   @@map("payments")
 }

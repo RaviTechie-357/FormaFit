@@ -1,15 +1,12 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useSelector, useDispatch } from 'react-redux'
-import { RootState, AppDispatch } from '../redux/store'
-import { logout } from '../redux/slices/authSlice'
-import { UserRole } from '../types/prisma'
-<<<<<<< HEAD
-import { Menu, X, User, Users, Settings, LogOut, Bell } from 'lucide-react'
-=======
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../redux/store";
+import { logout } from "../redux/slices/authSlice";
+import { UserRole } from "../types/prisma";
 import {
   Menu,
   X,
@@ -23,137 +20,107 @@ import {
   Target,
   Star,
   Award, // ✅ Added missing icons if used below
-} from 'lucide-react'
->>>>>>> e583eef (Your commit message here)
-import Image from 'next/image'
+} from "lucide-react";
+import Image from "next/image";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
-  const pathname = usePathname()
-  const dispatch = useDispatch<AppDispatch>()
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> e583eef (Your commit message here)
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  const dispatch = useDispatch<AppDispatch>();
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Close mobile menu when route changes
   useEffect(() => {
-    setIsMenuOpen(false)
-  }, [pathname])
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   const handleLogout = async () => {
-    await dispatch(logout())
-  }
+    await dispatch(logout());
+  };
 
   const getDashboardPath = () => {
-    if (!user) return '/auth/login'
+    if (!user) return "/auth/login";
     switch (user.role) {
       case UserRole.ADMIN:
-        return '/dashboard/admin'
+        return "/dashboard/admin";
       case UserRole.TRAINER:
-        return '/dashboard/trainer'
+        return "/dashboard/trainer";
       case UserRole.CLIENT:
-        return '/dashboard/client'
+        return "/dashboard/client";
       default:
-        return '/dashboard/client'
+        return "/dashboard/client";
     }
-  }
+  };
 
   const getRoleDisplayName = () => {
-    if (!user) return ''
+    if (!user) return "";
     switch (user.role) {
       case UserRole.ADMIN:
-        return 'Admin'
+        return "Admin";
       case UserRole.TRAINER:
-        return 'Trainer'
+        return "Trainer";
       case UserRole.CLIENT:
-        return 'Client'
+        return "Client";
       default:
-        return 'User'
+        return "User";
     }
-  }
+  };
 
-<<<<<<< HEAD
-  const mainNavItems = [
-    { name: 'Home', path: '/' },
-    { name: 'Find Trainers', path: '/trainers' },
-=======
   // ✅ Added "Features" link to the nav list
   const mainNavItems = [
-    { name: 'Home', path: '/' },
-    { name: 'Find Trainers', path: '/trainers' },
-    { name: 'Features', path: '/#features' }, // ✅ NEW
->>>>>>> e583eef (Your commit message here)
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
-  ]
+    { name: "Home", path: "/" },
+    { name: "Find Trainers", path: "/trainers" },
+    { name: "Features", path: "/#features" }, // ✅ NEW
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
+  ];
 
   const isActivePath = (path: string) => {
-    if (path === '/') {
-      return pathname === '/'
+    if (path === "/") {
+      return pathname === "/";
     }
-    return pathname.startsWith(path)
-  }
+    return pathname.startsWith(path);
+  };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' 
-        : 'bg-white/90 backdrop-blur-sm'
-    }`}>
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200"
+          : "bg-white/90 backdrop-blur-sm"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-<<<<<<< HEAD
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 group">
-            <div className="relative w-10 h-10">
+          <Link href="/" className="flex items-center group">
+            {/* ✅ Responsive Logo Container */}
+            <div className="relative w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] md:w-[100px] md:h-[100px]">
               <Image
-                src="/logo.svg"
+                src="/formafitperfect.png"
                 alt="FormaFit Logo"
-                width={40}
-                height={40}
-                className="transition-transform duration-300 group-hover:scale-110"
+                fill // Fills the container
+                className="object-contain transition-transform duration-300 group-hover:scale-110"
               />
             </div>
-            <span className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+
+            {/* ✅ Responsive Brand Text - adjusted margin to tighten spacing */}
+            <span className="ml-2 sm:ml-3 md:ml-4 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
               FormaFit
             </span>
           </Link>
-=======
-
-          {/* Logo */}
-           <Link href="/" className="flex items-center group">
-  {/* ✅ Responsive Logo Container */}
-  <div className="relative w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] md:w-[100px] md:h-[100px]">
-    <Image
-      src="/formafitperfect.png"
-      alt="FormaFit Logo"
-      fill // Fills the container
-      className="object-contain transition-transform duration-300 group-hover:scale-110"
-    />
-  </div>
-
-  {/* ✅ Responsive Brand Text - adjusted margin to tighten spacing */}
-  <span className="ml-2 sm:ml-3 md:ml-4 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-    FormaFit
-  </span>
-</Link>
-
-
-
->>>>>>> e583eef (Your commit message here)
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
@@ -162,13 +129,9 @@ export default function Header() {
                 key={item.path}
                 href={item.path}
                 className={`text-sm font-medium transition-colors duration-200 ${
-<<<<<<< HEAD
-                  isActivePath(item.path)
-=======
-                  isActivePath(item.path.replace('/#', '/'))
->>>>>>> e583eef (Your commit message here)
-                    ? 'text-blue-600'
-                    : 'text-gray-700 hover:text-blue-600'
+                  isActivePath(item.path.replace("/#", "/"))
+                    ? "text-blue-600"
+                    : "text-gray-700 hover:text-blue-600"
                 }`}
               >
                 {item.name}
@@ -198,8 +161,12 @@ export default function Header() {
                       <User className="w-4 h-4 text-white" />
                     </div>
                     <div className="hidden sm:block text-left">
-                      <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                      <p className="text-xs text-gray-500">{getRoleDisplayName()}</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {user?.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {getRoleDisplayName()}
+                      </p>
                     </div>
                   </button>
 
@@ -254,7 +221,11 @@ export default function Header() {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden p-2 text-gray-600 hover:text-blue-600 transition-colors"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -268,23 +239,14 @@ export default function Header() {
                   key={item.path}
                   href={item.path}
                   className={`block px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-<<<<<<< HEAD
-                    isActivePath(item.path)
-=======
-                    isActivePath(item.path.replace('/#', '/'))
->>>>>>> e583eef (Your commit message here)
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                    isActivePath(item.path.replace("/#", "/"))
+                      ? "text-blue-600 bg-blue-50"
+                      : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
                   }`}
                 >
                   {item.name}
                 </Link>
               ))}
-<<<<<<< HEAD
-              
-=======
-
->>>>>>> e583eef (Your commit message here)
               {isAuthenticated && (
                 <>
                   <hr className="my-2" />
@@ -316,9 +278,5 @@ export default function Header() {
         )}
       </div>
     </header>
-  )
-<<<<<<< HEAD
-} 
-=======
+  );
 }
->>>>>>> e583eef (Your commit message here)

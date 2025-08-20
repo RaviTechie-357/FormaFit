@@ -1,77 +1,76 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '../../../redux/store'
-import { login } from '../../../redux/slices/authSlice'
-import { Dumbbell, Eye, EyeOff, ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../redux/store";
+import { login } from "../../../redux/slices/authSlice";
+import { Dumbbell, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
-<<<<<<< HEAD
-=======
-
->>>>>>> e583eef (Your commit message here)
 export default function LoginPage() {
-  const router = useRouter()
-  const dispatch = useDispatch<AppDispatch>()
-  const { isLoading, error } = useSelector((state: RootState) => state.auth)
-  
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  })
-  const [showPassword, setShowPassword] = useState(false)
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+    email: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {
-    const errors: Record<string, string> = {}
-    
+    const errors: Record<string, string> = {};
+
     if (!formData.email) {
-      errors.email = 'Email is required'
+      errors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Email is invalid'
+      errors.email = "Email is invalid";
     }
-    
+
     if (!formData.password) {
-      errors.password = 'Password is required'
+      errors.password = "Password is required";
     }
-    
-    setFormErrors(errors)
-    return Object.keys(errors).length === 0
-  }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!validateForm()) return
-    
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
     try {
-      const result = await dispatch(login(formData))
+      const result = await dispatch(login(formData));
       if (login.fulfilled.match(result)) {
-        router.push('/dashboard/client') // Default redirect, will be overridden by role check
+        router.push("/dashboard/client"); // Default redirect, will be overridden by role check
       }
     } catch (error) {
-      console.error('Login error:', error)
+      console.error("Login error:", error);
     }
-  }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-    
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear error when user starts typing
     if (formErrors[name]) {
-      setFormErrors(prev => ({ ...prev, [name]: '' }))
+      setFormErrors((prev) => ({ ...prev, [name]: "" }));
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
-          <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4"
+          >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Link>
@@ -91,7 +90,10 @@ export default function LoginPage() {
           <div className="space-y-4">
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Email address
               </label>
               <input
@@ -103,7 +105,7 @@ export default function LoginPage() {
                 value={formData.email}
                 onChange={handleInputChange}
                 className={`appearance-none relative block w-full px-3 py-3 border ${
-                  formErrors.email ? 'border-red-300' : 'border-gray-300'
+                  formErrors.email ? "border-red-300" : "border-gray-300"
                 } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
                 placeholder="Enter your email"
               />
@@ -114,20 +116,23 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Password
               </label>
               <div className="relative">
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
                   value={formData.password}
                   onChange={handleInputChange}
                   className={`appearance-none relative block w-full px-3 py-3 pr-10 border ${
-                    formErrors.password ? 'border-red-300' : 'border-gray-300'
+                    formErrors.password ? "border-red-300" : "border-gray-300"
                   } placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
                   placeholder="Enter your password"
                 />
@@ -144,7 +149,9 @@ export default function LoginPage() {
                 </button>
               </div>
               {formErrors.password && (
-                <p className="mt-1 text-sm text-red-600">{formErrors.password}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {formErrors.password}
+                </p>
               )}
             </div>
           </div>
@@ -169,7 +176,7 @@ export default function LoginPage() {
                   Signing in...
                 </div>
               ) : (
-                'Sign in'
+                "Sign in"
               )}
             </button>
           </div>
@@ -177,28 +184,27 @@ export default function LoginPage() {
           {/* Links */}
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Don&apos;t have an account?{' '}
-              <Link href="/auth/register" className="font-medium text-blue-600 hover:text-blue-500">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/auth/register"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
                 Sign up here
               </Link>
-<<<<<<< HEAD
-            </p>
-=======
-
-
             </p>
 
             <p className="text-sm text-gray-600">
-  Forgot your password?{' '}
-  <Link href="/auth/login/forgot" className="font-medium text-blue-600 hover:text-blue-500">
-    Reset it here
-  </Link>
-</p>
-
->>>>>>> e583eef (Your commit message here)
+              Forgot your password?{" "}
+              <Link
+                href="/auth/login/forgot"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
+                Reset it here
+              </Link>
+            </p>
           </div>
         </form>
       </div>
     </div>
-  )
-} 
+  );
+}
