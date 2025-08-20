@@ -7,11 +7,8 @@ interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
-<<<<<<< HEAD
-=======
   successMessage?: string | null
   resetStep?: 'emailSent' | 'codeVerified' | null
->>>>>>> e583eef (Your commit message here)
 }
 
 const initialState: AuthState = {
@@ -20,11 +17,8 @@ const initialState: AuthState = {
   isAuthenticated: false,
   isLoading: false,
   error: null,
-<<<<<<< HEAD
-=======
   successMessage: null,
   resetStep: null,
->>>>>>> e583eef (Your commit message here)
 }
 
 // Async thunks
@@ -93,8 +87,6 @@ export const getCurrentUser = createAsyncThunk('auth/getCurrentUser', async () =
   return data
 })
 
-<<<<<<< HEAD
-=======
 // Forgot Password
 export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
@@ -146,7 +138,6 @@ export const verifyResetCode = createAsyncThunk(
   }
 )
 
->>>>>>> e583eef (Your commit message here)
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -178,10 +169,7 @@ const authSlice = createSlice({
         state.isLoading = false
         state.error = action.error.message || 'Login failed'
       })
-<<<<<<< HEAD
-=======
 
->>>>>>> e583eef (Your commit message here)
       // Register
       .addCase(register.pending, (state) => {
         state.isLoading = true
@@ -198,10 +186,7 @@ const authSlice = createSlice({
         state.isLoading = false
         state.error = action.error.message || 'Registration failed'
       })
-<<<<<<< HEAD
-=======
 
->>>>>>> e583eef (Your commit message here)
       // Logout
       .addCase(logout.fulfilled, (state) => {
         state.user = null
@@ -209,12 +194,8 @@ const authSlice = createSlice({
         state.isAuthenticated = false
         localStorage.removeItem('token')
       })
-<<<<<<< HEAD
-      // Get current user
-=======
 
       // Get Current User
->>>>>>> e583eef (Your commit message here)
       .addCase(getCurrentUser.pending, (state) => {
         state.isLoading = true
       })
@@ -230,8 +211,6 @@ const authSlice = createSlice({
         state.isAuthenticated = false
         localStorage.removeItem('token')
       })
-<<<<<<< HEAD
-=======
 
       // Forgot Password
       .addCase(forgotPassword.pending, (state) => {
@@ -262,13 +241,8 @@ const authSlice = createSlice({
         state.isLoading = false
         state.error = action.payload as string
       })
->>>>>>> e583eef (Your commit message here)
   },
 })
 
 export const { clearError, setToken } = authSlice.actions
-<<<<<<< HEAD
-export default authSlice.reducer 
-=======
 export default authSlice.reducer
->>>>>>> e583eef (Your commit message here)

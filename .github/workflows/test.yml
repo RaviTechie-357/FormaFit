@@ -1,0 +1,287 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: formafit_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup environment variables
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/formafit_test" >> .env.local
+          echo "JWT_SECRET=test-jwt-secret-key-for-testing-only" >> .env.local
+          echo "NEXT_PUBLIC_APP_URL=http://localhost:3000" >> .env.local
+          echo "NEXT_PUBLIC_APP_NAME=FormaFit" >> .env.local
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      - name: Push database schema
+        run: npm run db:push
+
+      - name: Run type checking
+        run: npm run type-check
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: test
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: formafit_e2e
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup environment variables
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/formafit_e2e" >> .env.local
+          echo "JWT_SECRET=test-jwt-secret-key-for-testing-only" >> .env.local
+          echo "NEXT_PUBLIC_APP_URL=http://localhost:3000" >> .env.local
+          echo "NEXT_PUBLIC_APP_NAME=FormaFit" >> .env.local
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      - name: Push database schema
+        run: npm run db:push
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application
+        run: npm start &
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/formafit_e2e
+          JWT_SECRET: test-jwt-secret-key-for-testing-only
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_APP_NAME: FormaFit
+
+      - name: Wait for application to start
+        run: npx wait-on http://localhost:3000
+
+      - name: Run E2E tests
+        run: npx playwright test
+
+      - name: Upload E2E test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  performance:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application
+        run: npm start &
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/formafit_test
+          JWT_SECRET: test-jwt-secret-key-for-testing-only
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_APP_NAME: FormaFit
+
+      - name: Wait for application to start
+        run: npx wait-on http://localhost:3000
+
+      - name: Run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.12.x
+          lhci autorun
+
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-results
+          path: .lighthouseci/
+          retention-days: 30
+
+  security:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run security audit
+        run: npm audit --audit-level=moderate
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+  accessibility:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application
+        run: npm start &
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/formafit_test
+          JWT_SECRET: test-jwt-secret-key-for-testing-only
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_APP_NAME: FormaFit
+
+      - name: Wait for application to start
+        run: npx wait-on http://localhost:3000
+
+      - name: Run accessibility tests
+        run: |
+          npm install -g axe-core
+          npx axe http://localhost:3000 --exit
+
+  quality-gates:
+    runs-on: ubuntu-latest
+    needs: [test, e2e, performance, security, accessibility]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run quality checks
+        run: |
+          # Check test coverage
+          npm run test:coverage
+          
+          # Check if coverage meets requirements
+          COVERAGE=$(npm run test:coverage --silent | grep -o 'All files[^%]*' | grep -o '[0-9]*\.[0-9]*%' | head -1 | sed 's/%//')
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "Test coverage ($COVERAGE%) is below required threshold (80%)"
+            exit 1
+          fi
+          
+          echo "All quality gates passed!"
+          echo "Test coverage: $COVERAGE%"
+
+      - name: Create test summary
+        run: |
+          echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Unit Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ E2E Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Performance Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Security Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Accessibility Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Quality Gates: Passed" >> $GITHUB_STEP_SUMMARY

@@ -79,6 +79,11 @@ export default function TrainersPage() {
   const [selectedSpecialization, setSelectedSpecialization] = useState('')
   const [priceRange, setPriceRange] = useState('')
   const [sortBy, setSortBy] = useState('rating')
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const specializations = ['Weight Training', 'Cardio', 'Nutrition', 'Yoga', 'Pilates', 'HIIT', 'Strength Training', 'Weight Loss', 'Bodybuilding', 'Powerlifting', 'Sports Performance']
 
@@ -129,7 +134,12 @@ export default function TrainersPage() {
                   placeholder="Search by name, location, or specialization..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={!isMounted}
+                  className={`w-full pl-10 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    isMounted 
+                      ? 'text-gray-900' 
+                      : 'text-gray-400 cursor-not-allowed'
+                  }`}
                 />
               </div>
             </div>
