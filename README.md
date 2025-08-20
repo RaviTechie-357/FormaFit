@@ -80,9 +80,29 @@ JWT_SECRET="your-super-secret-jwt-key-here-make-it-long-and-random"
 # App Configuration
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 NEXT_PUBLIC_APP_NAME="FormaFit"
+
+# Google Maps (Optional - for interactive map on contact page)
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="your_google_maps_api_key_here"
 ```
 
-### 4. Database Setup
+### 4. Google Maps Setup (Optional)
+
+To enable the interactive map on the contact page:
+
+1. **Get a Google Maps API Key:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select an existing one
+   - Enable the "Maps JavaScript API" and "Geocoding API"
+   - Create credentials (API Key)
+   - Add the API key to your `.env.local` file
+
+2. **API Key Restrictions (Recommended):**
+   - Restrict the API key to your domain
+   - Enable only the necessary APIs (Maps JavaScript API, Geocoding API)
+
+**Note:** The map will show a fallback view if no API key is provided.
+
+### 5. Database Setup
 
 ```bash
 # Generate Prisma client
@@ -95,7 +115,7 @@ npm run db:push
 npm run db:studio
 ```
 
-### 5. Run the Application
+### 6. Run the Application
 
 ```bash
 # Development mode

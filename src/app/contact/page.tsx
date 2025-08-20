@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from 'lucide-react'
+import InteractiveMap from '../../components/InteractiveMap'
+import { FormInput, FormTextarea } from '../../components/FormInput'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -94,69 +96,49 @@ export default function ContactPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter your full name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter your email"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject *
-                  </label>
-                  <input
+                  <FormInput
                     type="text"
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
+                    id="name"
+                    name="name"
+                    label="Full Name *"
+                    value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="What's this about?"
+                    placeholder="Enter your full name"
+                  />
+                  <FormInput
+                    type="email"
+                    id="email"
+                    name="email"
+                    label="Email Address *"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Enter your email"
                   />
                 </div>
                 
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                    placeholder="Tell us more about your inquiry..."
-                  />
-                </div>
+                <FormInput
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  label="Subject *"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="What's this about?"
+                />
+                
+                <FormTextarea
+                  id="message"
+                  name="message"
+                  label="Message *"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                  rows={6}
+                  placeholder="Tell us more about your inquiry..."
+                />
                 
                 <button
                   type="submit"
@@ -243,12 +225,10 @@ export default function ContactPage() {
               Stop by our headquarters to meet the team and learn more about FormaFit.
             </p>
           </div>
-          <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
-            <div className="text-center">
-              <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">Interactive map coming soon</p>
-            </div>
-          </div>
+          <InteractiveMap 
+            address="123 Fitness Street, New York, NY 10001"
+            height="h-64"
+          />
         </div>
       </div>
     </div>

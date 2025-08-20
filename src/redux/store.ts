@@ -6,10 +6,6 @@ import reviewReducer from './slices/reviewSlice'
 import notificationReducer from './slices/notificationSlice'
 import uiReducer from './slices/uiSlice'
 
-<<<<<<< HEAD
-=======
-
->>>>>>> e583eef (Your commit message here)
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -28,4 +24,4 @@ export const store = configureStore({
 })
 
 export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch 
+export type AppDispatch = typeof store.dispatch
