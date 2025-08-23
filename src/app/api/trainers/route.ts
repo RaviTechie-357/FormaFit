@@ -191,21 +191,21 @@
 // }
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
+import prisma from "../../../lib/db";
 import { UserRole } from "@/types/prisma";
 import { authenticateRequest } from "@/lib/authMiddleware";
 
 // -------------------- GET: List All Trainers --------------------
 export async function GET(request: NextRequest) {
   try {
-    const user = authenticateRequest(request);
+    // const user = authenticateRequest(request);
 
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    // if (!user) {
+    //   return NextResponse.json(
+    //     { success: false, message: "Unauthorized" },
+    //     { status: 401 }
+    //   );
+    // }
 
     const trainers = await prisma.user.findMany({
       where: {

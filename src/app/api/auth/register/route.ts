@@ -820,10 +820,314 @@
 //   }
 // }
 
+// import { NextRequest, NextResponse } from "next/server";
+// import { createUser } from "@/lib/auth";
+// import fs from "fs";
+// import path from "path";
+
+// export async function POST(req: NextRequest) {
+//   try {
+//     const formData = await req.formData();
+
+//     const name = formData.get("name") as string | null;
+//     const email = formData.get("email") as string | null;
+//     const password = formData.get("password") as string | null;
+//     const role = formData.get("role") as string | null;
+
+//     if (!name || !email || !password || !role) {
+//       return NextResponse.json(
+//         { success: false, error: "Missing required fields" },
+//         { status: 400 }
+//       );
+//     }
+
+//     // Base user data
+//     const userData: any = {
+//       email,
+//       password,
+//       name,
+//       role,
+//     };
+
+//     // Handle trainer-only fields
+//     if (role === "TRAINER") {
+//       const experienceStr = formData.get("experience") as string | null;
+//       const experience = experienceStr ? Number(experienceStr) : null;
+//       const specialization = formData.get("specialization") as string | null;
+//       const hourlyRate = formData.get("hourlyRate") as string | null;
+
+//       if (!experience || !specialization || !hourlyRate) {
+//         return NextResponse.json(
+//           { success: false, error: "Missing trainer details" },
+//           { status: 400 }
+//         );
+//       }
+
+//       // Handle documentation upload
+//       const uploadsDir = path.join(process.cwd(), "public", "uploads");
+//       if (!fs.existsSync(uploadsDir))
+//         fs.mkdirSync(uploadsDir, { recursive: true });
+
+//       const file = formData.get("documentation") as File | null;
+//       let documentation: string[] = [];
+//       if (file) {
+//         const bytes = await file.arrayBuffer();
+//         const buffer = Buffer.from(bytes);
+//         const fileName = file.name || `upload-${Date.now()}`;
+//         const filePath = path.join(uploadsDir, fileName);
+//         fs.writeFileSync(filePath, buffer);
+//         documentation = [`/uploads/${fileName}`];
+//       } else {
+//         return NextResponse.json(
+//           { success: false, error: "Trainer must upload documentation" },
+//           { status: 400 }
+//         );
+//       }
+
+//       // ✅ Attach nested trainerProfile
+//       userData.trainerProfile = {
+//         create: {
+//           experience,
+//           hourlyRate: Number(hourlyRate),
+//           specializations: [specialization], // make array if schema uses String[]
+//           certifications: documentation,
+//         },
+//       };
+//     }
+
+//     // Call prisma createUser
+//     const user = await createUser(userData);
+
+//     return NextResponse.json({ success: true, user });
+//   } catch (err) {
+//     console.error(err);
+//     return NextResponse.json(
+//       { success: false, error: "Failed to register" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+// export async function POST(req: NextRequest) {
+//   try {
+//     const formData = await req.formData();
+
+//     const name = formData.get("name") as string | null;
+//     const email = formData.get("email") as string | null;
+//     const password = formData.get("password") as string | null;
+//     const role = formData.get("role") as string | null;
+
+//     if (!name || !email || !password || !role) {
+//       return NextResponse.json(
+//         { success: false, error: "Missing required fields" },
+//         { status: 400 }
+//       );
+//     }
+
+//     // Base user data
+//     const userData: any = {
+//       email,
+//       password,
+//       name,
+//       role,
+//     };
+
+//     // Handle trainer-only fields
+//     if (role === "TRAINER") {
+//       const experienceStr = formData.get("experience") as string | null;
+//       const experience = experienceStr ? Number(experienceStr) : null;
+//       const specializationStr = formData.get("specializations") as
+//         | string
+//         | null;
+//       const hourlyRateStr = formData.get("hourlyRate") as string | null;
+//       console.log(experience);
+//       console.log(specializationStr);
+//       console.log(hourlyRateStr);
+
+//       if (!experience || !specializationStr || !hourlyRateStr) {
+//         return NextResponse.json(
+//           { success: false, error: "Missing trainer details" },
+//           { status: 400 }
+//         );
+//       }
+
+//       const hourlyRate = Number(hourlyRateStr);
+//       const specializations = specializationStr.split(",").map((s) => s.trim());
+
+//       // Handle uploads
+//       const uploadsDir = path.join(process.cwd(), "public", "uploads");
+//       if (!fs.existsSync(uploadsDir))
+//         fs.mkdirSync(uploadsDir, { recursive: true });
+
+//       let certifications: string[] = [];
+//       let documentation: string[] = [];
+
+//       // Multiple certifications
+//       const certFiles = formData.getAll("certifications") as File[];
+//       for (const file of certFiles) {
+//         if (file && file instanceof File) {
+//           const bytes = await file.arrayBuffer();
+//           const buffer = Buffer.from(bytes);
+//           const fileName = file.name || `cert-${Date.now()}`;
+//           const filePath = path.join(uploadsDir, fileName);
+//           fs.writeFileSync(filePath, buffer);
+//           certifications.push(`/uploads/${fileName}`);
+//         }
+//       }
+
+//       // Documentation (mandatory at least one)
+//       const docFiles = formData.getAll("documentation") as File[];
+//       for (const file of docFiles) {
+//         if (file && file instanceof File) {
+//           const bytes = await file.arrayBuffer();
+//           const buffer = Buffer.from(bytes);
+//           const fileName = file.name || `doc-${Date.now()}`;
+//           const filePath = path.join(uploadsDir, fileName);
+//           fs.writeFileSync(filePath, buffer);
+//           documentation.push(`/uploads/${fileName}`);
+//         }
+//       }
+
+//       if (documentation.length === 0) {
+//         return NextResponse.json(
+//           { success: false, error: "Trainer must upload documentation" },
+//           { status: 400 }
+//         );
+//       }
+
+//       // ✅ Attach nested trainerProfile
+//       userData.trainerProfile = {
+//         create: {
+//           experience,
+//           hourlyRate,
+//           specializations,
+//           certifications,
+//           documentation,
+//         },
+//       };
+//     }
+
+//     // Call prisma createUser
+//     const user = await createUser(userData);
+
+//     return NextResponse.json({ success: true, user });
+//   } catch (err) {
+//     console.error("Registration Error:", err);
+//     return NextResponse.json(
+//       { success: false, error: "Failed to register" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+// import { NextRequest, NextResponse } from "next/server";
+// import path from "path";
+// import fs from "fs";
+// import prisma from "@/lib/db"; // 👈 directly import prisma
+
+// export async function POST(req: NextRequest) {
+//   try {
+//     const formData = await req.formData();
+
+//     const name = formData.get("name") as string | null;
+//     const email = formData.get("email") as string | null;
+//     const password = formData.get("password") as string | null;
+//     const role = formData.get("role") as string | null;
+
+//     if (!name || !email || !password || !role) {
+//       return NextResponse.json(
+//         { success: false, error: "Missing required fields" },
+//         { status: 400 }
+//       );
+//     }
+
+//     // Base user data
+//     const userData: any = {
+//       email,
+//       password,
+//       name,
+//       role,
+//     };
+
+//     if (role === "TRAINER") {
+//       const experienceStr = formData.get("experience") as string | null;
+//       const experience = experienceStr ? Number(experienceStr) : null;
+
+//       const specializationStr = formData.get("specializations") as
+//         | string
+//         | null;
+//       const hourlyRateStr = formData.get("hourlyRate") as string | null;
+
+//       if (!experience || !specializationStr || !hourlyRateStr) {
+//         return NextResponse.json(
+//           { success: false, error: "Missing trainer details" },
+//           { status: 400 }
+//         );
+//       }
+
+//       const hourlyRate = Number(hourlyRateStr);
+//       const specializations = specializationStr.split(",").map((s) => s.trim());
+
+//       // Handle uploads
+//       const uploadsDir = path.join(process.cwd(), "public", "uploads");
+//       if (!fs.existsSync(uploadsDir)) {
+//         fs.mkdirSync(uploadsDir, { recursive: true });
+//       }
+
+//       let documentation: string[] = [];
+//       const docFiles = formData.getAll("documentation") as File[];
+//       for (const file of docFiles) {
+//         if (file && file instanceof File) {
+//           const bytes = await file.arrayBuffer();
+//           const buffer = Buffer.from(bytes);
+//           const fileName = file.name || `doc-${Date.now()}`;
+//           const filePath = path.join(uploadsDir, fileName);
+//           fs.writeFileSync(filePath, buffer);
+//           documentation.push(`/uploads/${fileName}`);
+//         }
+//       }
+
+//       if (documentation.length === 0) {
+//         return NextResponse.json(
+//           { success: false, error: "Trainer must upload documentation" },
+//           { status: 400 }
+//         );
+//       }
+
+//       userData.trainerProfile = {
+//         create: {
+//           experience,
+//           hourlyRate,
+//           specializations,
+//           documentation,
+//         },
+//       };
+//     }
+
+//     // ✅ Direct prisma call (no duplicate nesting)
+//     const user = await prisma.user.create({
+//       data: userData,
+//       include: {
+//         trainerProfile: true,
+//       },
+//     });
+
+//     console.log("UserData in post register:", userData);
+
+//     return NextResponse.json({ success: true, user });
+//   } catch (err) {
+//     console.error("Registration Error:", err);
+//     return NextResponse.json(
+//       { success: false, error: "Failed to register" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
 import { NextRequest, NextResponse } from "next/server";
-import { createUser } from "@/lib/auth";
-import fs from "fs";
 import path from "path";
+import fs from "fs";
+import { createUser, generateToken } from "@/lib/auth"; // 👈 use your helper
 
 export async function POST(req: NextRequest) {
   try {
@@ -844,56 +1148,88 @@ export async function POST(req: NextRequest) {
     // Base user data
     const userData: any = {
       email,
-      password,
+      password, // 👈 will be hashed inside createUser
       name,
       role,
     };
 
-    // Handle trainer-only fields
+    // Trainer-specific fields
     if (role === "TRAINER") {
-      const experience = formData.get("experience") as string | null;
-      const specialization = formData.get("specialization") as string | null;
-      const hourlyRate = formData.get("hourlyRate") as string | null;
+      const experienceStr = formData.get("experience") as string | null;
+      const experience = experienceStr ? Number(experienceStr) : null;
 
-      if (!experience || !specialization || !hourlyRate) {
+      const specializationStr = formData.get("specializations") as
+        | string
+        | null;
+      const hourlyRateStr = formData.get("hourlyRate") as string | null;
+
+      if (!experience || !specializationStr || !hourlyRateStr) {
         return NextResponse.json(
           { success: false, error: "Missing trainer details" },
           { status: 400 }
         );
       }
 
-      // Attach trainer-specific info
-      userData.experience = experience;
-      userData.specialization = specialization;
-      userData.hourlyRate = Number(hourlyRate);
+      const hourlyRate = Number(hourlyRateStr);
+      const specializations = specializationStr.split(",").map((s) => s.trim());
 
-      // Handle documentation upload
+      // Handle uploads
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
-      if (!fs.existsSync(uploadsDir))
+      if (!fs.existsSync(uploadsDir)) {
         fs.mkdirSync(uploadsDir, { recursive: true });
+      }
 
-      const file = formData.get("documentation") as File | null;
-      if (file) {
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        const fileName = file.name || `upload-${Date.now()}`;
-        const filePath = path.join(uploadsDir, fileName);
-        fs.writeFileSync(filePath, buffer);
-        userData.documentation = [`/uploads/${fileName}`];
-      } else {
+      let documentation: string[] = [];
+      const docFiles = formData.getAll("documentation") as File[];
+      for (const file of docFiles) {
+        if (file && file instanceof File) {
+          const bytes = await file.arrayBuffer();
+          const buffer = Buffer.from(bytes);
+          const fileName = file.name || `doc-${Date.now()}`;
+          const filePath = path.join(uploadsDir, fileName);
+          fs.writeFileSync(filePath, buffer);
+          documentation.push(`/uploads/${fileName}`);
+        }
+      }
+
+      if (documentation.length === 0) {
         return NextResponse.json(
           { success: false, error: "Trainer must upload documentation" },
           { status: 400 }
         );
       }
+
+      // Attach trainer data (your createUser will handle nesting)
+      userData.experience = experience;
+      userData.hourlyRate = hourlyRate;
+      userData.specializations = specializations;
+      userData.documentation = documentation;
     }
 
-    // Call prisma createUser
+    // ✅ Use your helper
     const user = await createUser(userData);
 
-    return NextResponse.json({ success: true, user });
-  } catch (err) {
-    console.error(err);
+    // Generate JWT
+    const token = generateToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
+
+    console.log("UserData in post register:", userData);
+
+    return NextResponse.json({ success: true, user, token });
+  } catch (err: any) {
+    console.error("Registration Error:", err);
+
+    if (err.code === "P2002") {
+      // Prisma unique constraint error
+      return NextResponse.json(
+        { success: false, error: "Email already registered" },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { success: false, error: "Failed to register" },
       { status: 500 }

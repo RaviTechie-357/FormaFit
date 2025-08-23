@@ -69,16 +69,15 @@ export const register = createAsyncThunk(
   async (userData: FormData) => {
     const response = await fetch("/api/auth/register", {
       method: "POST",
-      body: userData, // FormData automatically sets multipart/form-data
-      // ❌ Do NOT set headers here
+      body: userData, // ✅ FormData auto-handles content type
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Registration failed");
+      throw new Error(data.error || "Registration failed");
     }
 
-    const data = await response.json();
     return data;
   }
 );

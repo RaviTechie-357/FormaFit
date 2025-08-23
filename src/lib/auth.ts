@@ -208,33 +208,155 @@
 //   return user;
 // };
 
-import prisma from "../lib/db";
+// import prisma from "../lib/db";
 
+// interface CreateUserData {
+//   email: string;
+//   password: string;
+//   name: string;
+//   role: "ADMIN" | "TRAINER" | "CLIENT";
+//   experience?: number; // trainer only
+//   location?: string; // trainer only
+//   documentation?: string[]; // trainer only
+//   age?: number; // client only
+// }
+
+// export async function createUser(userData: CreateUserData) {
+//   try {
+//     if (userData.role === "TRAINER") {
+//       return await prisma.user.create({
+//         data: {
+//           email: userData.email,
+//           password: userData.password,
+//           name: userData.name,
+//           role: "TRAINER",
+//           trainerProfile: {
+//             create: {
+//               experience: userData.experience,
+//               location: userData.location,
+//               documentation: userData.documentation || [],
+//             },
+//           },
+//         },
+//         include: { trainerProfile: true },
+//       });
+//     }
+
+//     if (userData.role === "CLIENT") {
+//       return await prisma.user.create({
+//         data: {
+//           email: userData.email,
+//           password: userData.password,
+//           name: userData.name,
+//           role: "CLIENT",
+//           clientProfile: {
+//             create: {
+//               age: userData.age,
+//             },
+//           },
+//         },
+//         include: { clientProfile: true },
+//       });
+//     }
+
+//     // Default case → ADMIN or future roles
+//     return await prisma.user.create({
+//       data: {
+//         email: userData.email,
+//         password: userData.password,
+//         name: userData.name,
+//         role: "ADMIN",
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Error creating user:", error);
+//     throw error;
+//   }
+// }
+
+import prisma from "../lib/db";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs"; // for password hashing/validation
+
+// -------------------------------
+// JWT Helper
+// -------------------------------
+const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key";
+
+export function generateToken(payload: object) {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+}
+
+// -------------------------------
+// User Interface
+// -------------------------------
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: "ADMIN" | "TRAINER" | "CLIENT";
+  isActive: boolean;
+  password: string;
+}
+
+// -------------------------------
+// Authenticate User
+// -------------------------------
+export async function authenticateUser(email: string, password: string) {
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) return null;
+
+  // Check password (assuming stored as hash)
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) return null;
+
+  return user as User;
+}
+
+// -------------------------------
+// Create User (your existing code)
+// -------------------------------
 interface CreateUserData {
   email: string;
   password: string;
   name: string;
   role: "ADMIN" | "TRAINER" | "CLIENT";
-  experience?: string; // trainer only
-  location?: string; // trainer only
-  documentation?: string[]; // trainer only
-  age?: number; // client only
+
+  // Trainer only
+  experience?: number;
+  hourlyRate?: number;
+  specializations?: string[];
+  documentation?: string[];
+  location?: string;
+
+  // Client only
+  age?: number;
 }
 
 export async function createUser(userData: CreateUserData) {
   try {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+
     if (userData.role === "TRAINER") {
       return await prisma.user.create({
         data: {
           email: userData.email,
-          password: userData.password,
+          password: hashedPassword,
           name: userData.name,
           role: "TRAINER",
           trainerProfile: {
             create: {
-              experience: userData.experience,
-              location: userData.location,
+              // bio: userData.bio || null,
+              experience: userData.experience ?? null,
+              hourlyRate: userData.hourlyRate ?? 0,
+              location: userData.location || null,
               documentation: userData.documentation || [],
+              specializations: userData.specializations || [],
+              // skills: userData.skills || [],
+              // certifications: userData.certifications || [],
             },
           },
         },
@@ -246,12 +368,12 @@ export async function createUser(userData: CreateUserData) {
       return await prisma.user.create({
         data: {
           email: userData.email,
-          password: userData.password,
+          password: hashedPassword,
           name: userData.name,
           role: "CLIENT",
           clientProfile: {
             create: {
-              age: userData.age,
+              age: userData.age ?? null,
             },
           },
         },
@@ -259,11 +381,11 @@ export async function createUser(userData: CreateUserData) {
       });
     }
 
-    // Default case → ADMIN or future roles
+    // Default → ADMIN
     return await prisma.user.create({
       data: {
         email: userData.email,
-        password: userData.password,
+        password: hashedPassword,
         name: userData.name,
         role: "ADMIN",
       },

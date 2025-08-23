@@ -1245,7 +1245,7 @@ export default function RegisterPage() {
     role: UserRole.CLIENT,
     phone: "",
     experience: "",
-    specialization: "",
+    specializations: "",
     hourlyRate: "",
     documentation: null as File | null,
   });
@@ -1280,8 +1280,8 @@ export default function RegisterPage() {
     if (formData.role === UserRole.TRAINER) {
       if (!formData.experience.trim())
         errors.experience = "Experience is required for trainers";
-      if (!formData.specialization.trim())
-        errors.specialization = "Specialization is required for trainers";
+      if (!formData.specializations.trim())
+        errors.specializations = "Specialization is required for trainers";
       if (!formData.hourlyRate.trim())
         errors.hourlyRate = "Hourly rate is required for trainers";
       else if (isNaN(Number(formData.hourlyRate)))
@@ -1307,7 +1307,7 @@ export default function RegisterPage() {
           payload.append(key, value as any);
         }
       });
-
+      console.log("payload ", payload);
       const result = await dispatch(register(payload)); // Redux thunk must accept FormData
       if (register.fulfilled.match(result)) {
         router.push(
@@ -1488,26 +1488,26 @@ export default function RegisterPage() {
                 </div>
                 <div>
                   <label
-                    htmlFor="specialization"
+                    htmlFor="specializations"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     Specialization
                   </label>
                   <input
-                    id="specialization"
-                    name="specialization"
+                    id="specializations"
+                    name="specializations"
                     type="text"
-                    value={formData.specialization}
+                    value={formData.specializations}
                     onChange={handleInputChange}
                     className={`block w-full px-3 py-3 border ${
-                      formErrors.specialization
+                      formErrors.specializations
                         ? "border-red-300"
                         : "border-gray-300"
                     } rounded-lg`}
                   />
-                  {formErrors.specialization && (
+                  {formErrors.specializations && (
                     <p className="text-sm text-red-600">
-                      {formErrors.specialization}
+                      {formErrors.specializations}
                     </p>
                   )}
                 </div>
