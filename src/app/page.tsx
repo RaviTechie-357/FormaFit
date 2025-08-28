@@ -5,14 +5,17 @@ import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
 import { Dumbbell, ArrowRight } from 'lucide-react'
-import { CountUp }  from "./dashboard/Count"
+import { CountUp } from './dashboard/Count'
+import Shots from './dashboard/client/Shots'
+import { FaChalkboardTeacher } from "react-icons/fa";
+import { MdFeaturedPlayList } from "react-icons/md";
+import { TrainersPage } from "./trainers/page"
 
 export default function HomePage() {
   const router = useRouter()
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth)
 
   useEffect(() => {
-    // Auto-redirect authenticated users to their dashboard
     if (isAuthenticated && user) {
       if (user.role === 'TRAINER') {
         router.push('/dashboard/trainer')
@@ -24,35 +27,40 @@ export default function HomePage() {
     }
   }, [isAuthenticated, user, router])
 
- const stats = [
-  { number: 500, label: 'Certified Trainers', suffix: '+' },
-  { number: 10000, label: 'Happy Clients', suffix: '+' },
-  { number: 50000, label: 'Sessions Completed', suffix: '+' },
-  { number: 4.8, label: 'Average Rating', suffix: '' }
-]
-
+  const stats = [
+    { number: 500, label: 'Certified Trainers', suffix: '+' },
+    { number: 10000, label: 'Happy Clients', suffix: '+' },
+    { number: 50000, label: 'Sessions Completed', suffix: '+' },
+    { number: 4.8, label: 'Average Rating', suffix: '' }
+  ]
 
   const features = [
     {
+      image:'ahaha',
       title: 'Expert Trainers',
       description: 'Work with certified professionals who guide you through every step.',
-      icon: <Dumbbell className="w-8 h-8" />
+      icon: <FaChalkboardTeacher className="w-8 h-8" />,
+      link: '/features/expert-trainers',
     },
     {
       title: 'Custom Plans',
       description: 'Get fitness plans tailored to your personal goals and needs.',
-      icon: <Dumbbell className="w-8 h-8" />
+      icon: <MdFeaturedPlayList className="w-8 h-8" />,
+      link: '/features/custom-plans',
     },
     {
       title: 'Flexible Scheduling',
       description: 'Book sessions based on your availability and lifestyle.',
-      icon: <Dumbbell className="w-8 h-8" />
+      icon: <Dumbbell className="w-8 h-8" />,
+      link: '/features/flexible-scheduling',
     },
   ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Hero Section */}
+      <Shots />
+     
+
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -76,7 +84,7 @@ export default function HomePage() {
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </button>
                     <button
-                      onClick={() => router.push('/find-trainer')}
+                      onClick={() => router.push('/trainers')}
                       className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-50 transition-colors"
                     >
                       Browse Trainers
@@ -108,16 +116,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats Section */}
       <section className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">
-                    <CountUp end={stat.number} suffix={stat.suffix} />
-
-
+                  <CountUp end={stat.number} suffix={stat.suffix} />
                 </div>
                 <div className="text-gray-600">{stat.label}</div>
               </div>
@@ -126,7 +131,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section id="features" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -137,13 +141,15 @@ export default function HomePage() {
               We provide everything you need to achieve your fitness goals with professional guidance
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3  gap-8">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                onClick={() => router.push(feature.link)}
+                className="cursor-pointer bg-gray-100 p-8 rounded-xl border border-gray-300 shadow-sm hover:shadow-md hover:scale-[1.02] transition-all"
+
               >
-                <div className="text-blue-600 mb-4">{feature.icon}</div>
+                <div className="text-blue-600 mb-4 ">{feature.icon}</div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
                   {feature.title}
                 </h3>
@@ -154,7 +160,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="bg-blue-600 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold text-white mb-4">
@@ -181,7 +186,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">

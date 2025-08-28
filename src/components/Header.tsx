@@ -105,19 +105,18 @@ export default function Header() {
           {/* Logo */}
            <Link href="/" className="flex items-center group">
   {/* ✅ Responsive Logo Container */}
-  <div className="relative w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] md:w-[100px] md:h-[100px]">
-    <Image
-      src="/formafitperfect.png"
-      alt="FormaFit Logo"
-      fill // Fills the container
-      className="object-contain transition-transform duration-300 group-hover:scale-110"
-    />
-  </div>
+  <div className="relative w-[150px] h-[150px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[200px] lg:h-[200px] xl:w-[200px] xl:h-[200px]">
+  <Image
+    src="/formafitperfect.png"
+    alt="FormaFit Logo"
+    fill
+    className="object-contain transition-transform duration-300 group-hover:scale-110"
+  />
+</div>
+
 
   {/* ✅ Responsive Brand Text - adjusted margin to tighten spacing */}
-  <span className="ml-2 sm:ml-3 md:ml-4 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-    FormaFit
-  </span>
+  
 </Link>
 
 
@@ -127,16 +126,18 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             {mainNavItems.map((item) => (
               <Link
-                key={item.path}
-                href={item.path}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  isActivePath(item.path.replace('/#', '/'))
-                    ? 'text-blue-600'
-                    : 'text-gray-700 hover:text-blue-600'
-                }`}
-              >
-                {item.name}
-              </Link>
+  key={item.path}
+  href={item.path}
+  className={`group text-sm font-medium transition-transform duration-200 ${
+    isActivePath(item.path.replace('/#', '/'))
+      ? 'text-blue-600'
+      : 'text-gray-700 hover:text-blue-600'
+  }`}
+>
+  <span className="inline-block group-hover:scale-110 transition-transform duration-200">
+    {item.name}
+  </span>
+</Link>
             ))}
           </nav>
 
@@ -172,7 +173,7 @@ export default function Header() {
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                       <Link
                         href={getDashboardPath()}
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors "
                       >
                         <Settings className="w-4 h-4 mr-3" />
                         Dashboard
@@ -200,13 +201,16 @@ export default function Header() {
               <>
                 <Link
                   href="/auth/login"
-                  className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+                  className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors  text-xs sm:text-sm lg:text-base px-1 sm:px-2 lg:px-3"
                 >
                   Login
                 </Link>
                 <Link
                   href="/auth/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-xs sm:text-sm lg:text-base
+          px-2 sm:px-3 lg:px-4
+          py-1 sm:py-1.5 lg:py-2
+          rounded-md sm:rounded-lg "
                 >
                   Get Started
                 </Link>

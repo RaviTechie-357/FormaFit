@@ -5,6 +5,7 @@ import { Providers } from './providers'
 import { Toaster } from 'react-hot-toast'
 import ErrorBoundary from '../components/ErrorBoundary'
 import Header from '../components/Header'
+import { Shots } from "./dashboard/Shots"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,16 +19,20 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
+  
 }) {
   return (
     <html lang="en">
       <body className={inter.className}>
         <ErrorBoundary>
           <Providers>
-            <Header />
+            <Header /> 
             <main className="pt-16">
               {children}
+              
             </main>
+          
+
             <Toaster
               position="top-right"
               toastOptions={{

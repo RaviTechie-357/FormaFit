@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Functional Training",
+    "src": "/images/img1.jpeg",
+    "description": "Enhance strength, stability, and mobility through full-body movements designed to improve everyday performance and athletic ability."
+  },
+  {
+    "name": "Group Fitness Studios",
+    "src": "/images/img2.jpeg",
+    "description": "Join our dynamic group classes in a high-energy environment, perfect for motivation, fun, and building a strong fitness community."
+  },
+  {
+    "name": "Stretching and Core",
+    "src": "/images/img3.jpeg",
+    "description": "Focus on flexibility, balance, and core strength with guided routines that help prevent injuries and improve posture."
+  },
+  {
+    "name": "Cardio Area",
+    "src": "/images/img4.jpeg",
+    "description": "Burn calories and boost heart health with our state-of-the-art cardio machines, including treadmills, bikes, and ellipticals."
+  }
+]
