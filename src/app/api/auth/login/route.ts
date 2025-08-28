@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authenticateUser, generateToken, User } from "../../../../lib/auth";
+import { authenticateUser, generateToken, User } from "@/lib/auth";
 import { z } from "zod";
+import { sendMail } from "@/lib/mail";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -43,6 +44,30 @@ export async function POST(request: NextRequest) {
 
     // Remove password from response
     const { password, ...userWithoutPassword } = user;
+
+    // ✅ Send login alert email
+    await sendMail(
+      user.email,
+      "🔔 New Login Alert - FormaFit",
+      `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9;">
+        <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
+          <div style="background: #2196F3; color: white; padding: 15px; text-align: center;">
+            <h2>New Login Detected</h2>
+          </div>
+          <div style="padding: 20px; color: #333;">
+            <p>Hello <b>${user.name}</b>,</p>
+            <p>We noticed a new login to your account on <b>${new Date().toLocaleString()}</b>.</p>
+            <p>If this was you, no further action is required ✅.</p>
+            <p>If this wasn’t you, please <a href="#" style="color: #2196F3;">reset your password</a> immediately.</p>
+          </div>
+          <div style="background: #f1f1f1; padding: 10px; text-align: center; font-size: 12px; color: #555;">
+            © ${new Date().getFullYear()} FormaFit | All Rights Reserved
+          </div>
+        </div>
+      </div>
+      `
+    );
 
     return NextResponse.json({
       success: true,
