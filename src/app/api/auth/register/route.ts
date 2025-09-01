@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
 import { createUser, generateToken } from "@/lib/auth";
+import { sendMail } from "@/lib/mail";
 
 // Allowed roles
 const validRoles = ["ADMIN", "TRAINER", "CLIENT"];
@@ -194,6 +195,40 @@ export async function POST(req: NextRequest) {
       email: user.email,
       role: user.role,
     });
+
+    // 🔹 Send Welcome Mail
+    //   await sendMail(
+    //     user.email,
+    //     "Welcome to FormaFit 🎉",
+    //     `<h2>Hello ${user.name},</h2>
+    //  <p>Welcome aboard! We're excited to have you join as a <b>${user.role}</b>.</p>
+    //  <p>You can now log in and start using FormaFit 🚀</p>`
+    //   );
+    await sendMail(
+      user.email,
+      "Welcome to FormaFit 🎉",
+      `
+  <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+    <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <div style="background-color: #4CAF50; color: white; padding: 20px; text-align: center;">
+        <h1>🎉 Welcome to FormaFit</h1>
+      </div>
+      <div style="padding: 20px; color: #333;">
+        <h2>Hello ${user.name},</h2>
+        <p>We’re excited to have you join as a <b>${user.role}</b>.</p>
+        <p>You can now log in and start your fitness journey with us 🚀</p>
+        <a href="#" 
+           style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #4CAF50; color: white; text-decoration: none; border-radius: 6px;">
+          Get Started
+        </a>
+      </div>
+      <div style="background: #f1f1f1; padding: 10px; text-align: center; font-size: 12px; color: #555;">
+        © ${new Date().getFullYear()} FormaFit | All Rights Reserved
+      </div>
+    </div>
+  </div>
+  `
+    );
 
     return NextResponse.json({ success: true, user, token });
   } catch (err: any) {
