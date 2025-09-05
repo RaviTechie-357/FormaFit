@@ -60,9 +60,9 @@ export default function RegisterPage() {
       }
     }
 
-    // Phone validation (optional)
-    if (formData.phone.trim() && !/^\d{7,15}$/.test(formData.phone.trim())) {
-      errors.phone = "Phone must be 7–15 digits only";
+    // Phone validation (optional but must be exactly 10 digits if entered)
+    if (formData.phone.trim() && !/^\d{10}$/.test(formData.phone.trim())) {
+      errors.phone = "Phone number must be exactly 10 digits";
     }
 
     // Password validation

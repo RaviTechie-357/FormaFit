@@ -396,14 +396,16 @@ export default function Header() {
                 src="/formafitperfect.png"
                 alt="FormaFit Logo"
                 fill // Fills the container
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority
                 className="object-contain transition-transform duration-300 group-hover:scale-110"
               />
             </div>
 
             {/* Responsive Brand Text - adjusted margin to tighten spacing */}
-            <span className="ml-2 sm:ml-3 md:ml-4 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+            {/* <span className="ml-2 sm:ml-3 md:ml-4 text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
               FormaFit
-            </span>
+            </span> */}
           </Link>
 
           {/* Desktop Navigation */}
