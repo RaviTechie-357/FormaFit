@@ -297,6 +297,7 @@ export interface User {
   role: "ADMIN" | "TRAINER" | "CLIENT";
   isActive: boolean;
   password: string;
+  phone?: string;
 }
 
 // -------------------------------
@@ -324,6 +325,7 @@ interface CreateUserData {
   password: string;
   name: string;
   role: "ADMIN" | "TRAINER" | "CLIENT";
+  phone?: string;
 
   // Trainer only
   experience?: number;
@@ -347,6 +349,7 @@ export async function createUser(userData: CreateUserData) {
           password: hashedPassword,
           name: userData.name,
           role: "TRAINER",
+          phone: userData.phone || null,
           trainerProfile: {
             create: {
               // bio: userData.bio || null,
@@ -370,6 +373,7 @@ export async function createUser(userData: CreateUserData) {
           email: userData.email,
           password: hashedPassword,
           name: userData.name,
+          phone: userData.phone || null,
           role: "CLIENT",
           clientProfile: {
             create: {
